@@ -61,11 +61,17 @@ function spr_get_component( $key ) {
 function spr_demo_page() {
 	$notices = array();
 
-	// Handle Contact Form 7 ID save.
+	// Handle Contact Form 7 ID save. CF7 5.9+ uses a hash id (e.g. "1d3f601"),
+	// older versions a numeric post ID — store as a sanitized string, accept both.
 	if ( isset( $_POST['spr_save_cf7'] ) && check_admin_referer( 'spr_import_nonce' ) ) {
-		$cf7_id = isset( $_POST['spr_cf7_id'] ) ? absint( $_POST['spr_cf7_id'] ) : 0;
+		$cf7_id = isset( $_POST['spr_cf7_id'] ) ? sanitize_text_field( wp_unslash( $_POST['spr_cf7_id'] ) ) : '';
+		// Keep only the id token if a full shortcode was pasted in.
+		if ( preg_match( '/id=["\']?([A-Za-z0-9]+)/', $cf7_id, $m ) ) {
+			$cf7_id = $m[1];
+		}
+		$cf7_id = preg_replace( '/[^A-Za-z0-9]/', '', $cf7_id );
 		update_option( 'spr_contact_form_id', $cf7_id );
-		$notices[] = array( 'success', $cf7_id ? sprintf( __( 'Contact Form 7 form #%d saved.', 's-prestige' ), $cf7_id ) : __( 'Contact form ID cleared — the mailto fallback will show.', 's-prestige' ) );
+		$notices[] = array( 'success', '' !== $cf7_id ? sprintf( __( 'Contact Form 7 form "%s" saved.', 's-prestige' ), $cf7_id ) : __( 'Contact form ID cleared — the mailto fallback will show.', 's-prestige' ) );
 	}
 
 	// Handle selected-component sync.
@@ -102,7 +108,7 @@ function spr_demo_page() {
 	$status     = spr_check_status();
 	$components = spr_get_components();
 	$cf7_active = shortcode_exists( 'contact-form-7' );
-	$cf7_saved  = (int) get_option( 'spr_contact_form_id', 0 );
+	$cf7_saved  = (string) get_option( 'spr_contact_form_id', '' );
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'S-Prestige — Import &amp; Sync', 's-prestige' ); ?></h1>
@@ -170,10 +176,10 @@ function spr_demo_page() {
 				<?php endif; ?>
 				<form method="post">
 					<?php wp_nonce_field( 'spr_import_nonce' ); ?>
-					<label for="spr_cf7_id" style="font-size:13px;"><?php esc_html_e( 'CF7 form ID:', 's-prestige' ); ?></label>
-					<input type="number" min="0" id="spr_cf7_id" name="spr_cf7_id" value="<?php echo esc_attr( $cf7_saved ); ?>" style="width:90px;">
+					<label for="spr_cf7_id" style="font-size:13px;"><?php esc_html_e( 'CF7 form ID or shortcode:', 's-prestige' ); ?></label>
+					<input type="text" id="spr_cf7_id" name="spr_cf7_id" value="<?php echo esc_attr( $cf7_saved ); ?>" placeholder="1d3f601" style="width:220px;">
 					<?php submit_button( __( 'Save form ID', 's-prestige' ), 'secondary', 'spr_save_cf7', false ); ?>
-					<span style="font-size:12px; color:#666;"><?php esc_html_e( 'Tip: in Contact → Forms, the ID is in the shortcode, e.g. [contact-form-7 id="42"].', 's-prestige' ); ?></span>
+					<span style="font-size:12px; color:#666;"><?php esc_html_e( 'Paste the id from the shortcode in Contact → Forms — e.g. 1d3f601 (newer CF7) or 42 (older). You can paste the whole [contact-form-7 id="…"] tag too; only the id is kept.', 's-prestige' ); ?></span>
 				</form>
 			</div>
 

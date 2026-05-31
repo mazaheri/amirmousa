@@ -102,12 +102,14 @@ function spr_img_url( $mod_key, $fallback_file = '', $size = 'full' ) {
  * @return void
  */
 function spr_contact_form() {
-	$form_id = (int) get_option( 'spr_contact_form_id', 0 );
+	// CF7 5.9+ uses a hash-based id (e.g. "1d3f601"); older versions use the
+	// numeric post ID. Store and pass it verbatim as a string — CF7 accepts both.
+	$form_id = trim( (string) get_option( 'spr_contact_form_id', '' ) );
 	$email   = spr_raw( 'contact_email', 's.prestige.international@gmail.com' );
 
-	if ( $form_id && shortcode_exists( 'contact-form-7' ) ) {
+	if ( '' !== $form_id && shortcode_exists( 'contact-form-7' ) ) {
 		echo '<div class="spr-cf7">';
-		echo do_shortcode( '[contact-form-7 id="' . $form_id . '"]' );
+		echo do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
 		echo '</div>';
 		return;
 	}
@@ -122,7 +124,7 @@ function spr_contact_form() {
 			<?php esc_html_e( 'Email us your enquiry', 's-prestige' ); ?>
 			<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 		</a>
-		<?php if ( current_user_can( 'manage_options' ) && ! $form_id ) : ?>
+		<?php if ( current_user_can( 'manage_options' ) && '' === $form_id ) : ?>
 			<p style="font-size:12px; color:var(--text-muted); margin-top:16px;">
 				<?php
 				printf(
