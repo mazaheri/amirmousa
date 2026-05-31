@@ -1,0 +1,20 @@
+/*
+Theme Name: S-Prestige International
+Theme URI: https://github.com/mazaheri/amirmousa
+Author: Adnan International Trade & Export Group
+Description: Bespoke classic WordPress theme for S-Prestige International (Adnan International Trade & Export Group) — global trade in minerals, steel, petrochemicals, and chemicals. Pixel-perfect conversion of the static prototype with every string and image editable via the Customizer and a built-in Import & Sync admin page. Dark periwinkle design, Inter typeface, video hero. Contact Form 7 ready.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 7.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: s-prestige
+Tags: business, custom-colors, custom-logo, custom-menu, featured-images, full-width-template, translation-ready, theme-options
+*/
+
+/*
+ * Theme header only. All component styles live in assets/css/theme.css,
+ * which is enqueued first; this stylesheet is enqueued after it so any
+ * future hand-overrides placed below will win the cascade.
+ */

@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Never commit backups the conversion scripts may leave behind
+*.php.backup
+
+# Node / build (none currently, but future-proof)
+node_modules/
+*.log
