@@ -94,10 +94,11 @@ function spr_img_url( $mod_key, $fallback_file = '', $size = 'full' ) {
 /**
  * Output the contact form area.
  *
- * If a Contact Form 7 form ID has been saved (option spr_contact_form_id) AND
- * CF7 is active, render that shortcode wrapped in .spr-cf7 so it inherits the
- * prototype styling. Otherwise render a styled mailto fallback so the section
- * is never empty before the user installs/configures CF7.
+ * If a Contact Form 7 form ID has been saved (option spr_contact_form_id), CF7
+ * is active, AND the form actually renders, output it wrapped in .spr-cf7 so it
+ * inherits the prototype styling. If the form is missing/broken (CF7 would emit
+ * "Error: Contact form not found.") we DON'T show that error — we fall through
+ * to the styled mailto block instead, so visitors never see a raw CF7 error.
  *
  * @return void
  */
@@ -108,10 +109,14 @@ function spr_contact_form() {
 	$email   = spr_raw( 'contact_email', 's.prestige.international@gmail.com' );
 
 	if ( '' !== $form_id && shortcode_exists( 'contact-form-7' ) ) {
-		echo '<div class="spr-cf7">';
-		echo do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
-		echo '</div>';
-		return;
+		$rendered = do_shortcode( '[contact-form-7 id="' . esc_attr( $form_id ) . '"]' );
+		// Only show it if a real form came back; otherwise hide and use the fallback.
+		if ( false !== stripos( $rendered, '<form' ) ) {
+			echo '<div class="spr-cf7">';
+			echo $rendered; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CF7 output.
+			echo '</div>';
+			return;
+		}
 	}
 
 	// Fallback — styled prompt + mailto button (no JS, server-safe).
