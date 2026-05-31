@@ -5,6 +5,8 @@ Trade & Export Group). Converted pixel-for-pixel from the static prototype, with
 string and image made editable via the WordPress **Customizer** and a built-in
 **Import & Sync** admin page.
 
+**Author:** Pourya Mazaheri — [valasolution.com](https://valasolution.com) · [LinkedIn](https://www.linkedin.com/in/pourya-mazaheri-fard-2b4299390)
+
 > This repository is **theme-only** — it is the contents of `wp-content/themes/s-prestige/`.
 > On the server it lives at that path; `git pull` updates the code, then the admin runs
 > **Appearance → Import & Sync** to populate content.
