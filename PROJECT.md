@@ -82,6 +82,40 @@ wp-content/themes/s-prestige/
 
 ## 4. Progress log (newest at top)
 
+### 2026-05-31 — Session 2 (deploy + CF7 + author) — COMPLETE
+- [x] Pushed initial theme to `origin/main` (amirmousa.git). Commit `e6f612f`.
+- [x] User's CF7 shortcode is `[contact-form-7 id="1d3f601" title="Contact form 1"]`.
+      CF7 6.1.6 is ACTIVE; the form is post ID 19, `_hash` = 1d3f60134cffe5… and
+      `1d3f601` is the 7-char hash prefix. CF7 accepts hash OR numeric id.
+- [x] Fixed importer + helper to store the CF7 id as a **string** (was absint, which
+      broke the hash). Field now accepts a hash, a number, or a full pasted shortcode
+      (extracts the id). Commit `b56036c`.
+- [x] Saved id `1d3f601` to option `spr_contact_form_id` on the LOCAL site → real CF7
+      form now renders in the contact section, styled via `.spr-cf7`.
+- [x] Set theme author → **Pourya Mazaheri**, Author URI + Theme URI = valasolution.com,
+      LinkedIn (linkedin.com/in/pourya-mazaheri-fard-2b4299390) in Description + README.
+      Commit `ffa8650`.
+- [x] Hid CF7 errors: `spr_contact_form()` renders the shortcode, outputs it ONLY if it
+      contains a real `<form>`; if the form is missing/broken (CF7 prints "Error: Contact
+      form not found.") it falls back to the styled mailto block. Verified both paths.
+      Commit `1a0884b`.
+- [x] All 4 commits pushed; `main` in sync with `origin/main`; working tree clean.
+
+**STATE AT SESSION CLOSE (2026-05-31):**
+- Remote `origin/main` @ `1a0884b` — fully deployed/pushed.
+- LOCAL Studio site: theme active, content imported, CF7 form `1d3f601` wired up & rendering.
+- Option `spr_contact_form_id` = `1d3f601` (LOCAL only — DB value, NOT in git).
+
+**NEXT SESSION should:**
+1. (Deploy) On cPanel: `git pull origin main` in the theme dir → Appearance → Import & Sync
+   → Sync All (first time). Then create the CF7 form THERE and set its (different) hash id
+   under Import & Sync → Contact Form 7. Production form id ≠ local `1d3f601`.
+2. (Optional) Visually spot-check pixel fidelity vs the prototype, especially the CF7
+   contact form's two-column field layout.
+3. Future edits: change in Customizer (content) or edit code → commit → push → pull on cPanel.
+
+---
+
 ### 2026-05-31 — Session 1 (initial build) — COMPLETE
 - [x] Read all methodology docs (v4 bible, v5 import workflow, demo-importer-starter).
 - [x] Read all 3 prototype pages + content-reference.txt + README.
